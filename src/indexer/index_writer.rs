@@ -602,12 +602,7 @@ impl IndexWriter {
     /// Commit returns the `opstamp` of the last document
     /// that made it in the commit.
     ///
-<<<<<<< HEAD
-    pub fn commit(&mut self) -> Result<u64> {
-        println!("COMMIT");
-=======
     pub fn commit(&mut self) -> Result<Opstamp> {
->>>>>>> 5c0b2a4579adbdbb0c87adefa67bae0aa729c620
         self.prepare_commit()?.commit()
     }
 
