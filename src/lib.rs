@@ -203,7 +203,6 @@ mod indexer;
 #[allow(unused_doc_comments)]
 mod error;
 pub mod tokenizer;
-
 pub mod collector;
 pub mod directory;
 pub mod fastfield;
@@ -226,12 +225,15 @@ mod docset;
 pub use self::docset::{DocSet, SkipResult};
 
 pub use core::SegmentComponent;
-pub use core::{Index, Searcher, Segment, SegmentId, SegmentMeta};
+//SONAR: expose IndexMeta for manipulate meta.json
+pub use core::IndexMeta;
+pub use core::{Index, Searcher,  Segment, SegmentId, SegmentMeta};
 pub use core::{InvertedIndexReader, SegmentReader};
 pub use directory::Directory;
 pub use indexer::IndexWriter;
 pub use postings::Postings;
 pub use schema::{Document, Term};
+
 
 pub use common::{i64_to_u64, u64_to_i64};
 
