@@ -38,19 +38,10 @@ fn create_uuid() -> Uuid {
     Uuid::new_v4()
 }
 
-pub fn create_uuid_from_string(uuid_string : &str) -> Uuid {
-    Uuid::parse_str(uuid_string).unwrap()
-}
-
 impl SegmentId {
     #[doc(hidden)]
     pub fn generate_random() -> SegmentId {
         SegmentId(create_uuid())
-    }
-
-    // TODO: PR this function is needed for adding Segments from other indexes
-    pub fn generate_from_string(uuid_string: &str) -> SegmentId {
-        SegmentId(create_uuid_from_string(uuid_string))
     }
 
     /// Returns a shorter identifier of the segment.

@@ -32,8 +32,7 @@ use tokenizer::TokenizerManager;
 use IndexWriter;
 use Result;
 
-
-pub fn load_metas(directory: &Directory) -> Result<IndexMeta> {
+fn load_metas(directory: &Directory) -> Result<IndexMeta> {
     let meta_data = directory.atomic_read(&META_FILEPATH)?;
     let meta_string = String::from_utf8_lossy(&meta_data);
     serde_json::from_str(&meta_string)
@@ -48,7 +47,7 @@ pub fn load_metas(directory: &Directory) -> Result<IndexMeta> {
 
 /// Search Index
 #[derive(Clone)]
-pub struct Index { 
+pub struct Index {
     directory: ManagedDirectory,
     schema: Schema,
     executor: Arc<Executor>,

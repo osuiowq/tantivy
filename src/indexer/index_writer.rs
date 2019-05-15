@@ -603,7 +603,6 @@ impl IndexWriter {
     /// that made it in the commit.
     
     pub fn commit(&mut self) -> Result<u64> {
-        println!("COMMIT");
         self.prepare_commit()?.commit()
     }
 

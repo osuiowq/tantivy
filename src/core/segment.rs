@@ -35,10 +35,6 @@ pub fn create_segment(index: Index, meta: SegmentMeta) -> Segment {
 }
 
 impl Segment {
-    ///TODO: PR 
-    pub fn create_segment(index: Index, meta: SegmentMeta) -> Segment {
-    Segment { index, meta }
-    }
     /// Returns the index the segment belongs to.
     pub fn index(&self) -> &Index {
         &self.index
