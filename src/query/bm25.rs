@@ -3,7 +3,7 @@ use Score;
 use Searcher;
 use Term;
 
-const K1: f32 = 1.2;
+const K1: f32 = 1.75;
 const B: f32 = 0.75;
 
 fn idf(doc_freq: u64, doc_count: u64) -> f32 {
