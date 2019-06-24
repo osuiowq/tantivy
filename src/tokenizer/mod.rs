@@ -97,6 +97,8 @@
 //! If you built your schema programmatically, a complete example
 //! could like this for instance.
 //!
+//! Note that tokens with a len greater or equal to [`MAX_TOKEN_LEN`](./constant.MAX_TOKEN_LEN.html).
+//!
 //! # Example
 //!
 //! ```
@@ -129,6 +131,7 @@
 //! ```
 //!
 mod alphanum_only;
+mod ascii_folding_filter;
 mod facet_tokenizer;
 mod lower_caser;
 mod ngram_tokenizer;
@@ -142,6 +145,7 @@ mod tokenizer;
 mod tokenizer_manager;
 
 pub use self::alphanum_only::AlphaNumOnlyFilter;
+pub use self::ascii_folding_filter::AsciiFoldingFilter;
 pub use self::facet_tokenizer::FacetTokenizer;
 pub use self::lower_caser::LowerCaser;
 pub use self::ngram_tokenizer::NgramTokenizer;
@@ -156,6 +160,13 @@ pub use self::tokenizer::BoxedTokenizer;
 
 pub use self::tokenizer::{Token, TokenFilter, TokenStream, Tokenizer};
 pub use self::tokenizer_manager::TokenizerManager;
+
+/// Maximum authorized len (in bytes) for a token.
+///
+/// Tokenizer are in charge of not emitting tokens larger than this value.
+/// Currently, if a faulty tokenizer implementation emits tokens with a length larger than
+/// `2^16 - 1 - 4`, the token will simply be ignored downstream.
+pub const MAX_TOKEN_LEN: usize = u16::max_value() as usize - 4;
 
 #[cfg(test)]
 pub mod tests {
@@ -228,27 +239,27 @@ pub mod tests {
     fn test_non_en_tokenizer() {
         let tokenizer_manager = TokenizerManager::default();
         tokenizer_manager.register(
-            "es_stem",
+            "el_stem",
             SimpleTokenizer
                 .filter(RemoveLongFilter::limit(40))
                 .filter(LowerCaser)
-                .filter(Stemmer::new(Language::Spanish)),
+                .filter(Stemmer::new(Language::Greek)),
         );
-        let en_tokenizer = tokenizer_manager.get("es_stem").unwrap();
+        let en_tokenizer = tokenizer_manager.get("el_stem").unwrap();
         let mut tokens: Vec<Token> = vec![];
         {
             let mut add_token = |token: &Token| {
                 tokens.push(token.clone());
             };
             en_tokenizer
-                .token_stream("Hola, feliz contribuyente!")
+                .token_stream("Καλημέρα, χαρούμενε φορολογούμενε!")
                 .process(&mut add_token);
         }
 
         assert_eq!(tokens.len(), 3);
-        assert_token(&tokens[0], 0, "hola", 0, 4);
-        assert_token(&tokens[1], 1, "feliz", 6, 11);
-        assert_token(&tokens[2], 2, "contribuyent", 12, 25);
+        assert_token(&tokens[0], 0, "καλημερ", 0, 16);
+        assert_token(&tokens[1], 1, "χαρουμεν", 18, 36);
+        assert_token(&tokens[2], 2, "φορολογουμεν", 37, 63);
     }
 
     #[test]
